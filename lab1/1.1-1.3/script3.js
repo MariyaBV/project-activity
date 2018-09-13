@@ -1,16 +1,32 @@
 const staff = {
-        "Вася": -23,
-        "Петя": -27,
-        "Даша": -22
+    "Вася": -23,
+    "Петя": -27,
+    "Даша": -22
 };
 
-let maxValue = Object.values(staff)[0];
-let maxValueKey = Object.keys(staff)[0];
-for (const key of Object.keys(staff)){
-    if( staff[key] > maxValue) {
-        maxValue = staff[key];
-        maxValueKey = key;
-    }
+function searchMax(objIterable){
+    let trFl = isEmpty(objIterable);
+
+    let maxValue = Object.values(objIterable)[0];
+    let maxValueKey = Object.keys(objIterable)[0];
+
+    if (trFl) 
+    {
+        for (const key of Object.keys(objIterable))
+        if (objIterable[key] > maxValue) {
+            maxValue = objIterable[key];
+            maxValueKey = key;
+        }
+        return console.log(maxValue, maxValueKey);
+    } else {
+        console.log("Объект пустой");
+    }   
 }
-console.log(maxValue);
-console.log(maxValueKey);
+
+function isEmpty(obj) {
+    for (const key in obj)
+        if (obj.hasOwnProperty(key)) return true;
+    return false;
+}
+
+searchMax(staff);    

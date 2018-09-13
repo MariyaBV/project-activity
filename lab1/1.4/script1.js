@@ -8,7 +8,7 @@ function Calculator() {
         return this.a + this.b;
     };
   
-    this.mul = function() { //подсче произведения
+    this.mul = function() { //подсчет произведения
         return this.a * this.b;
     };
 }
