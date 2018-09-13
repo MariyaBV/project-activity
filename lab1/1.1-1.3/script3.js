@@ -1,7 +1,7 @@
 const staff = {
-    "Вася": -23,
-    "Петя": -27,
-    "Даша": -22
+    "Вася": 23,
+    "Петя": 27,
+    "Даша": 22
 };
 
 function searchMax(objIterable){
@@ -16,8 +16,11 @@ function searchMax(objIterable){
         if (objIterable[key] > maxValue) {
             maxValue = objIterable[key];
             maxValueKey = key;
-        }
-        return console.log(maxValue, maxValueKey);
+        };
+        return  console.log( {
+            name: maxValueKey,
+            age: maxValue
+        })
     } else {
         console.log("Объект пустой");
     }   
