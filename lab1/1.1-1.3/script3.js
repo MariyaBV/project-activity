@@ -1,35 +1,30 @@
-const staff = {
-    "Вася": 23,
-    "Петя": 27,
-    "Даша": 22
-};
+function searchOlder(staffs){
+    const obj = Object.keys(staffs);
+    if (obj.length == 0) return null;
 
-function searchMax(objIterable){
-    let trFl = isEmpty(objIterable);
+    let maxKey = obj[0];
+    let maxValue = staffs[maxKey];
 
-    let maxValue = Object.values(objIterable)[0];
-    let maxValueKey = Object.keys(objIterable)[0];
+    for (const key of obj)
+    if (staffs[key] > maxValue) {
+        maxValue = staffs[key];
+        maxKey = key;
+    };
 
-    if (trFl) 
-    {
-        for (const key of Object.keys(objIterable))
-        if (objIterable[key] > maxValue) {
-            maxValue = objIterable[key];
-            maxValueKey = key;
-        };
-        return  console.log( {
-            name: maxValueKey,
-            age: maxValue
-        })
-    } else {
-        console.log("Объект пустой");
-    }   
+    return  ({
+        name: maxKey,
+        age: maxValue
+    })
 }
 
-function isEmpty(obj) {
-    for (const key in obj)
-        if (obj.hasOwnProperty(key)) return true;
-    return false;
+function main() {
+    const staff = {
+        "Вася": -23,
+        "Петя": -27,
+        "Даша": -22,
+    };
+    const olderStaff = searchOlder(staff);
+    console.log(olderStaff);
 }
 
-searchMax(staff);    
+main();    
