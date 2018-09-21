@@ -26,42 +26,42 @@ function drawBeam(ctx, xSun, ySun, deg){
     ctx.stroke();
 }
 
-function drawHome(ctx){
+function drawHome(ctx, xTopOfRoof, yTopOfRoof){
     //дом
     ctx.fillStyle = '#bf9000';
-    ctx.fillRect(400, 200, 300, 270);
+    ctx.fillRect(xTopOfRoof - 150, yTopOfRoof + 50, 300, 270);
 
     //труба
     ctx.fillStyle = '#666';
     ctx.beginPath();
-    ctx.moveTo(600, 200);
-    ctx.lineTo(600, 100);
-    ctx.lineTo(650, 100);
-    ctx.lineTo(650, 200);
+    ctx.moveTo(xTopOfRoof + 50, yTopOfRoof + 50);
+    ctx.lineTo(xTopOfRoof + 50, yTopOfRoof - 50);
+    ctx.lineTo(xTopOfRoof + 100, yTopOfRoof - 50);
+    ctx.lineTo(xTopOfRoof + 100, yTopOfRoof + 50);
     ctx.fill();
 
     //крыша
     ctx.fillStyle = '#cc0000';
     ctx.beginPath();
-    ctx.moveTo(400, 200);
-    ctx.lineTo(550, 100);
-    ctx.lineTo(700, 200);
-    ctx.lineTo(400, 200);
+    ctx.moveTo(xTopOfRoof - 150, yTopOfRoof + 50);
+    ctx.lineTo(xTopOfRoof, yTopOfRoof - 50);
+    ctx.lineTo(xTopOfRoof + 150, yTopOfRoof + 50);
+    ctx.lineTo(xTopOfRoof - 150, yTopOfRoof + 50);
     ctx.fill();
 
     //окно
     ctx.fillStyle = '#ffd966';
-    ctx.fillRect(475, 270, 150, 130);
+    ctx.fillRect(xTopOfRoof - 75, yTopOfRoof + 120, 150, 130);
     //рама
     ctx.fillStyle = '#666';
     ctx.beginPath();
-    ctx.moveTo(550, 270);
-    ctx.lineTo(550, 400);
+    ctx.moveTo(xTopOfRoof, yTopOfRoof + 120);
+    ctx.lineTo(xTopOfRoof, yTopOfRoof + 250);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(475, 335);
-    ctx.lineTo(625, 335);
+    ctx.moveTo(xTopOfRoof - 75, yTopOfRoof + 185);
+    ctx.lineTo(xTopOfRoof + 75, yTopOfRoof + 185);
     ctx.stroke();
 }
 
@@ -82,6 +82,9 @@ function draw() {
     canvas.width = maxWidth;
     canvas.height = maxHeight;
     const ctx = canvas.getContext('2d');
+
+    const xTopOfRoof = 550;
+    const yTopOfRoof = 150;
 
     const xCloud1 = 250;
     const yCloud1 = 100;
@@ -105,7 +108,7 @@ function draw() {
     drawСloud(ctx, xCloud1, yCloud1);
     drawСloud(ctx, xCloud2, yCloud2);
     drawСloud(ctx, xCloud3, yCloud3);
-    drawHome(ctx);
+    drawHome(ctx, xTopOfRoof, yTopOfRoof);
 }
 
 window.onload = function() {
