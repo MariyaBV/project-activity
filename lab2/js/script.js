@@ -1,10 +1,11 @@
 function drawBackground(ctx, maxWidth, maxHeight) {
-    const earthSky = maxHeight / 5;
+    const earthSky = 0.2;
+    
     ctx.fillStyle = '#3c78d8';
     ctx.fillRect(0, 0, maxWidth, maxHeight);
 
     ctx.fillStyle = '#6aa84f';
-    ctx.fillRect(0, (4 * earthSky), maxWidth, earthSky);
+    ctx.fillRect(0, (1 - earthSky) * maxHeight, maxWidth, maxHeight);
 }
 
 //солнце
@@ -69,8 +70,8 @@ function drawСloud(ctx, x, y){
     ctx.fillStyle = '#cfe2f3';
     ctx.beginPath();
     ctx.ellipse(x, y, 70, 30, 0, 0, 2 * Math.PI);
-    ctx.ellipse(x+35, y+35, 70, 30, 0, 0, 2 * Math.PI);
-    ctx.ellipse(x-35, y+35, 70, 30, 0, 0, 2 * Math.PI);
+    ctx.ellipse(x + 35, y + 35, 70, 30, 0, 0, 2 * Math.PI);
+    ctx.ellipse(x - 35, y + 35, 70, 30, 0, 0, 2 * Math.PI);
     ctx.fill();
 }
 
