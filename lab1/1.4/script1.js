@@ -4,8 +4,8 @@ function Calculator() {
 
 
     this.read = function() {
-        this.a = +prompt('Введите значение: a =', 0); // this.a = parseInt(promt('Введите значение: a =', 0), 10) || 0;
-        this.b = +prompt('Введите значение: b =', 0); // this.b = number(promt('Введите значение: a =', 0), 10) || 0;
+        this.a = parseInt(promt('Введите значение: a =', 0), 10) || 0; //this.a = +prompt('Введите значение: a =', 0); 
+        this.b = number(promt('Введите значение: b =', 0), 10) || 0; //this.b = +prompt('Введите значение: b =', 0);
     };
   
     this.sum = function() { //подсчет суммы
