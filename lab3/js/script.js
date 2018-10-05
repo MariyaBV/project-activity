@@ -1,18 +1,15 @@
+const EARTH_TO_SKY = 0.2;
+const CLOUD_RADIUS = 105;
+const SUN_RADIUS = 50;
+const SUN_SPEED = Math.PI / 12;
+const SUN_ORBIT = 300;
+const SKY_SHADE = 240;
+
 //земля
 function drawEarth(ctx, width, height) {
-    const earthSky = 0.2;
-
     ctx.fillStyle = "#6aa84f";
-    ctx.fillRect(0, (1 - earthSky) * height, width, height);
+    ctx.fillRect(0, (1 - EARTH_TO_SKY) * height, width, height);
 }
-
-//солнце
-// function drawSun(ctx, xSun, ySun, widthSun){
-//     ctx.fillStyle = '#ffe599';
-//     ctx.beginPath();
-//     ctx.arc(xSun, ySun, widthSun, 0, 2 * Math.PI);
-//     ctx.fill();
-// }
 
 function drawHome(ctx, xTopOfRoof, yTopOfRoof){
     //дом
@@ -53,6 +50,16 @@ function drawHome(ctx, xTopOfRoof, yTopOfRoof){
     ctx.stroke();
 }
 
+function Sun({
+    startX,
+    startY,
+    angle,
+}) {
+    this.x = startX;
+    this.y = startY;
+    this.angle = angle;
+}
+
 function Cloud({
     startX,
     startY,
@@ -63,15 +70,47 @@ function Cloud({
     this.moveSpeed = moveSpeed;
 }
 
-Cloud.RADIUS = 105;
-
-//небо
-function drawSky({ctx, boxWidth, boxHeight}) {   
-    ctx.fillStyle = "#3c78d8";
-    ctx.fillRect(0, 0, boxWidth, boxHeight);
+function Sky({
+    color
+}) {
+    this.color = color;
 }
 
-function drawСloud(ctx, cloud){
+function HslColor({
+    hue,
+    saturation,
+    lightness,
+}) {
+    this.h = hue;
+    this.s = saturation;
+    this.l = lightness;
+
+    this.toFillStyle = function () {
+        const h = SKY_SHADE;
+        const s = this.s;
+        const l = this.l;
+        return "hsl(" + h + "," + s + "%," + l + "%)";
+    }
+}
+
+//солнце
+function drawSun({ctx, sun}){
+    ctx.fillStyle = '#ffe599';
+    ctx.beginPath();
+    ctx.arc(sun.x, sun.y, SUN_RADIUS, 0, 2 * Math.PI);
+    ctx.fill();
+}
+
+function moveSun({sun, boxWidth, boxHeight, dt}){
+    deltaAngle = SUN_SPEED * dt;
+    sun.angle *= deltaAngle;
+    sun.angle %= 2 * Math.PI; 
+    sun.x = SUN_ORBIT * Math.sin(sun.angle) + boxWidth / 2;
+    sun.y = SUN_ORBIT * Math.cos(sun.angle) + EARTH_TO_SKY * boxHeight;
+}
+
+//облака
+function drawСloud({ctx, cloud}){
     ctx.fillStyle = "#cfe2f3";
     ctx.beginPath();
     ctx.ellipse(cloud.x, cloud.y, 70, 30, 0, 0, 2 * Math.PI);
@@ -80,35 +119,17 @@ function drawСloud(ctx, cloud){
     ctx.fill();
 }
 
-function redraw({ctx, boxWidth, boxHeight, clouds}) {
-    const xTopOfRoof = 550;
-    const yTopOfRoof = 150;
-
-    drawSky({ctx, boxWidth, boxHeight});
-    for (const cloud of clouds) {
-        drawСloud(ctx, cloud);
-    };
-    drawEarth(ctx, boxWidth, boxHeight);
-    drawHome(ctx, xTopOfRoof, yTopOfRoof);
-}
-
 function moveСloud({cloud, boxWidth, dt}) {
     const distance = cloud.moveSpeed * dt;
     cloud.x -= distance;
 
-    if (cloud.x < (- (Cloud.RADIUS * 2))) {
-        cloud.x = boxWidth + Cloud.RADIUS * 2;
-    }
-}
-
-function update({clouds, boxWidth, boxHeight, dt}) {
-    for (const cloud of clouds) {
-        moveСloud({cloud, boxWidth, dt});
+    if (cloud.x < (- (CLOUD_RADIUS * 2))) {
+        cloud.x = boxWidth + CLOUD_RADIUS * 2;
     }
 }
 
 function createCloud({boxWidth,  boxHeight}) {
-    const startX = boxWidth + 2 * Cloud.RADIUS;
+    const startX = boxWidth + 2 * CLOUD_RADIUS;
     const startY = Math.random() * boxHeight * 0.3 + 50; // random[0,1)*150px + 50px
     const moveSpeed = Math.random() * 500 + 10;
     return new Cloud({
@@ -118,6 +139,38 @@ function createCloud({boxWidth,  boxHeight}) {
     });
 };
 
+//небо
+function drawSky({ctx, sky, boxWidth, boxHeight}) {
+    ctx.fillStyle = sky.color.toFillStyle();
+    ctx.fillRect(0, 0, boxWidth, boxHeight);
+}
+
+function moveSky({sky, sun}) {
+    const lightness = (Math.sin(sun.angle) + 1) * 50;
+    sky.color.l = lightness;
+}
+
+function update({sky, sun, clouds, boxWidth, boxHeight, dt}) {
+    moveSun({sun, boxWidth, boxHeight, dt});
+    for (const cloud of clouds) {
+        moveСloud({cloud, boxWidth, dt});
+    }
+    moveSky({sky, sun});
+}
+
+function redraw({sky, sun, clouds, boxWidth, boxHeight, ctx}) {
+    const xTopOfRoof = 550;
+    const yTopOfRoof = 150;
+
+    drawSky({ctx, sky, boxWidth, boxHeight});
+    drawSun({ctx, sun});
+    for (const cloud of clouds) {
+        drawСloud({ctx, cloud});
+    };
+    drawEarth(ctx, boxWidth, boxHeight);
+    drawHome(ctx, xTopOfRoof, yTopOfRoof);
+}
+
 function main() {
     const canvas = document.getElementById('canvas');
     const width = canvas.offsetWidth;
@@ -126,16 +179,36 @@ function main() {
     canvas.height = height;
     const ctx = canvas.getContext('2d');
 
+    const sun = new Sun({
+        startX: width / 2, 
+        startY: height * EARTH_TO_SKY,
+        angle: Math.PI / 2,
+    });
     const clouds = [];
-    const MAX_CLOUD = 1;
+    const MAX_CLOUD = 3;
     for (let i = 1; i <= MAX_CLOUD; ++i) {
         clouds.push(createCloud({
             boxWidth: width,
             boxHeight: height,
         }));
     }
+    const hsl = new HslColor({
+        hue: SKY_SHADE, 
+        saturation: 100, 
+        lightness: 80
+    });
+    const sky = new Sky({
+        color: hsl
+    });
 
-    redraw({clouds, width, height, ctx});
+    redraw({
+        sky,
+        sun,
+        clouds, 
+        width, 
+        height, 
+        ctx
+    });
 
     let lastTimestamp = Date.now(); //текущее время в ms
     const animateFn = () => {
@@ -144,12 +217,16 @@ function main() {
         lastTimestamp = currentTimeStamp;
 
         update({
+            sky,
+            sun,
             clouds,
             boxWidth: width,
             boxHeight: height,
             dt: deltaTime,
         });
         redraw({
+            sky,
+            sun,
             clouds,
             boxWidth: width,
             boxHeight: height,
@@ -160,6 +237,4 @@ function main() {
     animateFn();
 };
 
-window.onload = function() {
-    main();
-};
+main();
