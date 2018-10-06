@@ -103,10 +103,10 @@ function drawSun({ctx, sun}){
 
 function moveSun({sun, boxWidth, boxHeight, dt}){
     deltaAngle = SUN_SPEED * dt;
-    sun.angle *= deltaAngle;
+    sun.angle += deltaAngle;
     sun.angle %= 2 * Math.PI; 
-    sun.x = SUN_ORBIT * Math.sin(sun.angle) + boxWidth / 2;
-    sun.y = SUN_ORBIT * Math.cos(sun.angle) + EARTH_TO_SKY * boxHeight;
+    sun.x = SUN_ORBIT * Math.cos(sun.angle) + boxWidth / 2;
+    sun.y = SUN_ORBIT * Math.sin(sun.angle) + (1 - EARTH_TO_SKY) * boxHeight;
 }
 
 //облака
@@ -146,7 +146,7 @@ function drawSky({ctx, sky, boxWidth, boxHeight}) {
 }
 
 function moveSky({sky, sun}) {
-    const lightness = (Math.sin(sun.angle) + 1) * 50;
+    const lightness = 100 - (Math.sin(sun.angle) + 1) * 50;
     sky.color.l = lightness;
 }
 
@@ -159,8 +159,8 @@ function update({sky, sun, clouds, boxWidth, boxHeight, dt}) {
 }
 
 function redraw({sky, sun, clouds, boxWidth, boxHeight, ctx}) {
-    const xTopOfRoof = 550;
-    const yTopOfRoof = 150;
+    const xTopOfRoof = 500;
+    const yTopOfRoof = 170;
 
     drawSky({ctx, sky, boxWidth, boxHeight});
     drawSun({ctx, sun});
@@ -180,9 +180,9 @@ function main() {
     const ctx = canvas.getContext('2d');
 
     const sun = new Sun({
-        startX: width / 2, 
-        startY: height * EARTH_TO_SKY,
-        angle: Math.PI / 2,
+        startX: width * 0.8, 
+        startY: height * (1 - EARTH_TO_SKY),
+        angle: Math.PI
     });
     const clouds = [];
     const MAX_CLOUD = 3;
@@ -195,7 +195,7 @@ function main() {
     const hsl = new HslColor({
         hue: SKY_SHADE, 
         saturation: 100, 
-        lightness: 80
+        lightness: 50
     });
     const sky = new Sky({
         color: hsl
