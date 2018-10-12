@@ -114,8 +114,8 @@ function drawСloud({ctx, cloud}){
     ctx.fillStyle = "#cfe2f3";
     ctx.beginPath();
     ctx.ellipse(cloud.x, cloud.y, 70, 30, 0, 0, 2 * Math.PI);
-    ctx.ellipse(cloud.x + 35, cloud.y + 35, 70, 30, 0, 0, 2 * Math.PI);
-    ctx.ellipse(cloud.x - 35, cloud.y + 35, 70, 30, 0, 0, 2 * Math.PI);
+    ctx.ellipse(cloud.x + 35, cloud.y + 25, 70, 30, 0, 0, 2 * Math.PI);
+    ctx.ellipse(cloud.x - 35, cloud.y + 25, 70, 30, 0, 0, 2 * Math.PI);
     ctx.fill();
 }
 
