@@ -2,7 +2,7 @@ const EARTH_TO_SKY = 0.2;
 const CLOUD_RADIUS = 105;
 const SUN_RADIUS = 50;
 const SUN_SPEED = Math.PI / 12;
-const SUN_ORBIT = 300;
+const SUN_ORBIT = 350;
 const SKY_SHADE = 240;
 
 //земля
@@ -145,9 +145,8 @@ function drawSky({ctx, sky, boxWidth, boxHeight}) {
     ctx.fillRect(0, 0, boxWidth, boxHeight);
 }
 
-function moveSky({sky, sun}) {
-    const lightness = 100 - (Math.sin(sun.angle) + 1) * 50;
-    sky.color.l = lightness;
+function updateSky({sky, sun}) {
+    sky.color.l = 100 - (Math.sin(sun.angle) + 1) * 50;
 }
 
 function update({sky, sun, clouds, boxWidth, boxHeight, dt}) {
@@ -155,7 +154,7 @@ function update({sky, sun, clouds, boxWidth, boxHeight, dt}) {
     for (const cloud of clouds) {
         moveСloud({cloud, boxWidth, dt});
     }
-    moveSky({sky, sun});
+    updateSky({sky, sun});
 }
 
 function redraw({sky, sun, clouds, boxWidth, boxHeight, ctx}) {
