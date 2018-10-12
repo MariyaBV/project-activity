@@ -213,10 +213,8 @@ function main() {
         } else if ((event.keyCode == 189) && (timeСhange >= MIN_TIME)) {
             timeСhange -= TIME_CONSTANT;
         } else if ((event.keyCode == 32) && (spaceNotPress)) {
-            timeСhange = 0;
             spaceNotPress = false;
         } else if  ((event.keyCode == 32) && (!spaceNotPress)) {
-            timeСhange = 0.5;
             spaceNotPress = true;
         }
     });
@@ -247,16 +245,19 @@ function main() {
         const deltaTime = (currentTimeStamp - lastTimestamp) * 0.001; //сколько секунд прошло с прошлого кадра
         lastTimestamp = currentTimeStamp;
 
-        update({
-            sky,
-            sun,
-            clouds,
-            boxWidth: width,
-            boxHeight: height,
-            dt: deltaTime,
-            timeСhange,
-            windowColor
-        });
+        if (spaceNotPress){
+            update({
+                sky,
+                sun,
+                clouds,
+                boxWidth: width,
+                boxHeight: height,
+                dt: deltaTime,
+                timeСhange,
+                windowColor
+            });
+        }
+        
         redraw({
             sky,
             sun,
