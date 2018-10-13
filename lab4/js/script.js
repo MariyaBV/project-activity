@@ -4,12 +4,18 @@ const SUN_RADIUS = 50;
 const SUN_SPEED = Math.PI / 12;
 const SUN_ORBIT = 350;
 const SKY_SHADE = 240;
-const MAX_TIME = 10; // для максимальной скорости
+const MAX_TIME = 5; // для максимальной скорости
 const TIME_CONSTANT = 0.5; // на сколько увеличивается скорость
 const MIN_TIME = 1; // для минимальной скорости
 let timeСhange = 0.5; // изменение скорости при нажатии
 let spaceNotPress = true;
 let windowColor = "#ffd966";
+const windowWidth = 150;
+const windowHeight = 130;
+const xTopOfRoof = 500;
+const yTopOfRoof = 170;
+const xstartPointWindow = xTopOfRoof - 75;
+const ystartPointWindow = yTopOfRoof + 120;
 
 //земля
 function drawEarth(ctx, width, height) {
@@ -17,7 +23,7 @@ function drawEarth(ctx, width, height) {
     ctx.fillRect(0, (1 - EARTH_TO_SKY) * height, width, height);
 }
 
-function drawHome(ctx, xTopOfRoof, yTopOfRoof, windowColor){
+function drawHome(ctx, windowColor){
     //дом
     ctx.fillStyle = "#bf9000";
     ctx.fillRect(xTopOfRoof - 150, yTopOfRoof + 50, 300, 270);
@@ -42,7 +48,7 @@ function drawHome(ctx, xTopOfRoof, yTopOfRoof, windowColor){
 
     //окно
     ctx.fillStyle = windowColor;
-    ctx.fillRect(xTopOfRoof - 75, yTopOfRoof + 120, 150, 130);
+    ctx.fillRect(xstartPointWindow, ystartPointWindow, windowWidth, windowHeight);
 
     //рама
     ctx.fillStyle = "#666";
@@ -165,16 +171,13 @@ function update({sky, sun, clouds, boxWidth, boxHeight, dt, timeСhange}) {
 }
 
 function redraw({sky, sun, clouds, boxWidth, boxHeight, ctx, windowColor}) {
-    const xTopOfRoof = 500;
-    const yTopOfRoof = 170;
-
     drawSky({ctx, sky, boxWidth, boxHeight});
     drawSun({ctx, sun});
     for (const cloud of clouds) {
         drawСloud({ctx, cloud});
     };
     drawEarth(ctx, boxWidth, boxHeight);
-    drawHome(ctx, xTopOfRoof, yTopOfRoof, windowColor);
+    drawHome(ctx, windowColor);
 }
 
 function main() {
@@ -220,7 +223,7 @@ function main() {
     });
 
     canvas.addEventListener("click", function(event) {
-        if ((event.offsetX >= 425) && (event.offsetX <= 575) && (event.offsetY >= 290) && (event.offsetY <= 420)) {
+        if ((event.offsetX >= xstartPointWindow) && (event.offsetX <= (xstartPointWindow + windowWidth)) && (event.offsetY >= ystartPointWindow) && (event.offsetY <= (ystartPointWindow + windowHeight))) {
             if (windowColor == '#ffd966'){
                 windowColor = '#2b2a2a';
             } else {
@@ -256,17 +259,17 @@ function main() {
                 timeСhange,
                 windowColor
             });
+
+            redraw({
+                sky,
+                sun,
+                clouds,
+                boxWidth: width,
+                boxHeight: height,
+                ctx,
+                windowColor
+            });
         }
-        
-        redraw({
-            sky,
-            sun,
-            clouds,
-            boxWidth: width,
-            boxHeight: height,
-            ctx,
-            windowColor
-        });
         requestAnimationFrame(animateFn);
     }
     animateFn();
